@@ -1,7 +1,8 @@
 <!--
+To avoid cross-browser scripting errors, this solution passes through a
+third party (yahoo). It's not secure, so see
 http://stackoverflow.com/questions/24377804/cross-domain-jsonp-xml-response
-this works, but is not a high-security solution as it passes through a third party (yahoo)
-Find stop IDs: http://www.transitchicago.com/riding_cta/how_to_guides/bustrackerlookup_stoplists.aspx
+for more details. 
 -->
 
 <!DOCTYPE html>
@@ -16,14 +17,24 @@ var updateCntr = 0;
 var firstArrival;
 var lastArrival;
 
+// ***************************************************************************************
+
+// http://www.transitchicago.com/developers/traintrackerapply.aspx -->
+// http://www.transitchicago.com/riding_cta/systemguide/buses.aspx -->
+// http://www.transitchicago.com/riding_cta/how_to_guides/bustrackerlookup_stoplists.aspx -->
+
 var myAPIkey = "YOUR API KEY GOES HERE";
+var myRoute = "65";		// for example
+var myStopID = "731";	// for example
+
+// ***************************************************************************************
 
 function busPredictions() {
 
 	updateCntr++;
 	$('.updateConf').html(updateCntr);
 
-    var xmlSource = ["http://www.ctabustracker.com/bustime/api/v1/getpredictions?key=", myAPIkey, "&rt=65&stpid=731"].join("");
+    var xmlSource = ["http://www.ctabustracker.com/bustime/api/v1/getpredictions?key=", myAPIkey, "&rt=", myRoute, "&stpid=", myStopID].join("");
 
 	// build the yql query. Could be just a string - I think join makes easier reading
     var yqlURL = [

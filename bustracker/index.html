@@ -1,0 +1,128 @@
+<!--
+http://stackoverflow.com/questions/24377804/cross-domain-jsonp-xml-response
+this works, but is not a high-security solution as it passes through a third party (yahoo)
+Find stop IDs: http://www.transitchicago.com/riding_cta/how_to_guides/bustrackerlookup_stoplists.aspx
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+
+<!-- Using local JQ file, latest deep link no longer supported -->
+<script src="jquery-2.1.3.min.js"></script>
+<script>
+
+var updateCntr = 0;
+var firstArrival;
+var lastArrival;
+
+var myAPIkey = "YOUR API KEY GOES HERE";
+
+function busPredictions() {
+
+	updateCntr++;
+	$('.updateConf').html(updateCntr);
+
+    var xmlSource = ["http://www.ctabustracker.com/bustime/api/v1/getpredictions?key=", myAPIkey, "&rt=65&stpid=731"].join("");
+
+	// build the yql query. Could be just a string - I think join makes easier reading
+    var yqlURL = [
+        "http://query.yahooapis.com/v1/public/yql",
+        "?q=" + encodeURIComponent("select * from xml where url='" + xmlSource + "'"),
+        "&format=xml&callback=?"
+    ].join("");
+
+	// Now do the AJAX heavy lifting        
+    $.getJSON(yqlURL, function(data){
+        xmlContent = $(data.results[0]);
+
+		var array = $(xmlContent).find("prdtm").map(function() {
+		return this.outerHTML;
+		}).get();
+		var shortText = jQuery.trim(array[0]).substring(16, 21);
+		
+		var currentDate = new Date();
+		var currentMinNum = currentDate.getMinutes();	// number 
+		var currentHrNum = currentDate.getHours();		// number						
+
+// No busses predicted
+
+		if(array.length == 0){
+			$('.first').html("&#9785;");				// frowny
+		}
+		
+// One bus predicted
+
+		if(array.length > 0){
+				
+			var predictedMinStr = jQuery.trim(array[0]).substring(19, 21);	// string
+			var predictedHrStr = jQuery.trim(array[0]).substring(16, 18);	// string
+			var predictedMinNum = parseInt(predictedMinStr);				// number	
+			var predictedHrNum = parseInt(predictedHrStr);					// number
+		
+			if(predictedHrNum == currentHrNum){
+				firstArrival = predictedMinNum - currentMinNum;
+			}
+			else if(predictedHrNum == currentHrNum + 1 || predictedHrNum == 0){
+				firstArrival = predictedMinNum + 60 - currentMinNum;
+			}
+						
+			if (lastArrival != firstArrival){
+				//alert("Not equal: firstArrival =" + firstArrival + ", lastArrival= " + lastArrival);
+				$('.first').animate({opacity: 0}, 500, function() {$(this).text(firstArrival);});
+				$('.first').animate({opacity: 1}, 500, function() {});
+			}
+			lastArrival = firstArrival;
+		}
+		
+// More than one bus predicted
+
+		if(array.length > 1){
+			
+			var predictedMinStr = jQuery.trim(array[1]).substring(19, 21);	// string
+			var predictedHrStr = jQuery.trim(array[1]).substring(16, 18);	// string
+			var predictedMinNum = parseInt(predictedMinStr);				// number	
+			var predictedHrNum = parseInt(predictedHrStr);					// number
+						
+			if(predictedHrNum == currentHrNum){
+				arrival = predictedMinNum - currentMinNum;
+			}
+			else if(predictedHrNum == currentHrNum + 1 || predictedHrNum == 0){
+				arrival = predictedMinNum + 60 - currentMinNum;
+			}
+			$('.second').text(arrival);
+		}
+    });
+}
+
+function updateTime() {
+    /// Increment serverTime by 1 second and update the html for '#time'
+	var serverTime = new Date();
+    serverTime = new Date(serverTime.getTime() + 1000);
+    $('.currentTime').html(serverTime.toGMTString());
+}
+
+$(function() {
+    updateTime();
+    busPredictions();
+    setInterval(updateTime, 1000);
+    setInterval(busPredictions, 10000);
+});
+	    
+</script>
+
+<link rel="stylesheet" type="text/css" href="style.css">
+
+</head>
+<body>
+	<div class = "box0">
+		<div class = "box1">
+			<span class = "predictions">
+				<span class = "first"></span><span class = "second"></span>
+			</span>
+		</div>
+	</div>		
+	<div class = "box2">
+		<span class = "updateConf"></span>
+	</div></body>
+</html>

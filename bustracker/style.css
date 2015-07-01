@@ -1,0 +1,47 @@
+body {
+    background: #666;
+	font-family: "Arial Black", Gadget, sans-serif;
+	overflow: hidden;
+}
+
+.box0{
+	position: absolute;
+	height: 900px;
+	width: 1440px;
+	left: 0px;
+	top: 0px;
+}
+
+.box1{
+	position: relative;
+	width: 100%;
+	top: 100px;
+	background: #f0f;
+	text-align: center;
+}
+
+.box2{
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	color: white;
+	font-size: 10px;
+}
+
+.predictions{
+	font-family: "Arial Black", Gadget, sans-serif;
+	font-size: 450px;
+	text-align: center; 
+}
+
+.first {
+	color: white;
+}
+
+.second {
+	color: #666;
+}
+
+ : disrupting the methods of clothing production
+
+

@@ -136,13 +136,20 @@ for updated JQ versions rather than just rolling with the one I
 included, but that's up to you. I recommend you place all three items in
 a folder called scripts on your RPi desktop.
 
-### Physical Buttons (WIP)
+### Hardware Buttons (Optional)
 
-One funny feature of the RPi is that it has no physical shutdown button.
+One funny feature of the RPi is that it has no physical reset/shutdown buttons.
 Sure, you can implement a shutdown via SSH, but we want the convenience
 of single touch wake/sleep. There's a great tutorial at 
 [Makezine](http://makezine.com/projects/tutorial-raspberry-pi-gpio-pins-and-python/) 
 on this topic. It's well worth the read if you want to learn about both
-the GPIO pins and the advantage of callbacks over polling. For our
-purposes we'll need a restart button and a shutdown button. I haven't
-finished implementing this yet, so stay tuned.
+the GPIO pins and the advantage of callbacks over polling.
+
+The python script that listens for our buttons is already sitting in the
+bustracker folder. All you need to do now is add the filepath
+'sudo python /home/pi/Desktop/scripts/shutdown.py & '
+to `sudo nano/etc/rc.local`. The reset button also functions as a wake
+button if you used the shutdown button to turn the pi off last time.
+
+Note: none of these buttons fully disconnect power from the pi. I assume
+it draws very little power in this state, but I haven't looked into it.

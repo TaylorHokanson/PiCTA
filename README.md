@@ -147,7 +147,7 @@ the GPIO pins and the advantage of callbacks over polling.
 
 The python script that listens for our buttons is already sitting in the
 bustracker folder. All you need to do now is add the filepath
-'sudo python /home/pi/Desktop/scripts/shutdown.py & '
+`sudo python /home/pi/Desktop/scripts/shutdown.py &`
 to `sudo nano/etc/rc.local`. The reset button also functions as a wake
 button if you used the shutdown button to turn the pi off last time.
 

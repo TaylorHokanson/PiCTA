@@ -15,11 +15,12 @@ only ever care about the one stop outside my house, and I want to be
 able to glance at the predictions many times while getting ready in the
 morning.
 
-Note: You must apply for you own API key in order for this code to work. Each
-key only allows a certain amount of queries per day, so keep this in
-mind if you leave the page running 24/7. Even if you do hit the cap it
-should reset at midnight, and you can always code in downtime or
-decrease query frequency.
+Note: You must apply for you own 
+[API key](http://www.transitchicago.com/developers/traintrackerapply.aspx) 
+in order for this code to work. Each key only allows a certain amount of
+queries per day, so keep this in mind if you leave the page running
+24/7. Even if you do hit the cap it should reset at midnight, and you
+can always code in downtime or decrease query frequency.
 
 You can use this code with or without a Raspberry Pi. If you just want
 the browser functionality, copy the Browser folder to your computer and
@@ -37,7 +38,7 @@ the timezone correctly - this will be important later.
 3. Computer monitor (mine has a resolution of 1440 x 900)
 4. USB wifi dongle (though Ethernet works too)
 5. Tactile switches, wire, female headers, solder
-6. HDMI to DVI cable
+6. Video cable (depending on your setup)
 7. RPi power source
 8. 4GB SD card
 
@@ -46,11 +47,11 @@ the timezone correctly - this will be important later.
 First we'll teach the Pi to boot automatically and head straight for a
 fullscreen Chromium window (see 
 [this link](http://blogs.wcode.org/2013/09/howto-boot-your-raspberry-pi-into-a-fullscreen-browser-kiosk/#comments-toggle)
- for more info). The following commands assume your are logged in to
- your pi via SSH. Note that RPi will not warn you if this process will
- not fit in your remaining SD card space. You can check with `df -m` to
- see how much disk space remains, and delete old update files with `sudo
- apt-get clean`.
+for more info). The following commands assume your are logged in to
+your pi via SSH. Note that RPi will not warn you if this process will
+not fit in your remaining SD card space. You can check with `df -m` to
+see how much disk space remains, and delete old update files with `sudo
+apt-get clean`.
 
 ```
 sudo apt-get update
@@ -135,7 +136,7 @@ for updated JQ versions rather than just rolling with the one I
 included, but that's up to you. I recommend you place all three items in
 a folder called scripts on your RPi desktop.
 
-### Physical Buttons
+### Physical Buttons (WIP)
 
 One funny feature of the RPi is that it has no physical shutdown button.
 Sure, you can implement a shutdown via SSH, but we want the convenience
@@ -143,11 +144,5 @@ of single touch wake/sleep. There's a great tutorial at
 [Makezine](http://makezine.com/projects/tutorial-raspberry-pi-gpio-pins-and-python/) 
 on this topic. It's well worth the read if you want to learn about both
 the GPIO pins and the advantage of callbacks over polling. For our
-purposes we'll need a restart button and a shutdown button.
-
-Restart is the easiest to implement, as my version of the Pi already has
-two pads that just need to be jumped. All you need to do here is to
-solder on a pair of wires and a tactile switch. The shutdown feature is
-not automatically included in the OS and must be created from scratch.
-While this guy's tutorial worked for me regarding restart, I needed to
-use a different method to get shutdown working.
+purposes we'll need a restart button and a shutdown button. I haven't
+finished implementing this yet, so stay tuned.

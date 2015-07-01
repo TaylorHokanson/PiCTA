@@ -3,8 +3,8 @@ Raspberry Pi/Web Browser Chicago Bus Tracker
 
 ### About
 
-Project by Taylor Hokanson
-www.taylorhokanson.com
+Project by Taylor Hokanson  
+www.taylorhokanson.com  
 taylor [at] taylorhokanson [dawt] com 
 
 This code tracks the next two arrival times for the CTA

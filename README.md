@@ -23,7 +23,7 @@ queries per day, so keep this in mind if you leave the page running
 can always code in downtime or decrease query frequency.
 
 You can use this code with or without a Raspberry Pi. If you just want
-the browser functionality, copy the Browser folder to your computer and
+the browser functionality, copy the bustracker folder to your computer and
 create a bookmarklet to index.html. Done! If you want to make a standalone
 device, read on. For those totally new to Raspberry Pi, please follow the
 excellent instructions at
@@ -130,7 +130,7 @@ not found" error.
 
 ### Local Webpage
 
-The Browser folder contains an HTML doc, a CSS page for controlling
+The bustracker folder contains an HTML doc, a CSS page for controlling
 visual style, and a local copy of JQuery. You'll probably want to check
 for updated JQ versions rather than just rolling with the one I
 included, but that's up to you. I recommend you place all three items in

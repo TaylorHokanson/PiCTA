@@ -44,11 +44,13 @@ the timezone correctly - this will be important later.
 ### Set up Kiosk Mode
 
 First we'll teach the Pi to boot automatically and head straight for a
-fullscreen Chromium window (see this link for more info). The following
-commands assume your are logged in to your pi via SSH. Note that RPi
-will not warn you if this process will not fit in your remaining SD card
-space. You can check with `df -m` to see how much disk space remains, and
-delete old update files with `sudo apt-get clean`.
+fullscreen Chromium window (see 
+[this link](http://blogs.wcode.org/2013/09/howto-boot-your-raspberry-pi-into-a-fullscreen-browser-kiosk/#comments-toggle)
+ for more info). The following commands assume your are logged in to
+ your pi via SSH. Note that RPi will not warn you if this process will
+ not fit in your remaining SD card space. You can check with `df -m` to
+ see how much disk space remains, and delete old update files with `sudo
+ apt-get clean`.
 
 ```
 sudo apt-get update
@@ -137,10 +139,11 @@ a folder called scripts on your RPi desktop.
 
 One funny feature of the RPi is that it has no physical shutdown button.
 Sure, you can implement a shutdown via SSH, but we want the convenience
-of single touch wake/sleep. There's a great tutorial at Makezine on this
-topic. It's well worth the read if you want to learn about both the GPIO
-pins and the advantage of callbacks over polling. For our purposes we'll
-need a restart button and a shutdown button.
+of single touch wake/sleep. There's a great tutorial at 
+[Makezine](http://makezine.com/projects/tutorial-raspberry-pi-gpio-pins-and-python/) 
+on this topic. It's well worth the read if you want to learn about both
+the GPIO pins and the advantage of callbacks over polling. For our
+purposes we'll need a restart button and a shutdown button.
 
 Restart is the easiest to implement, as my version of the Pi already has
 two pads that just need to be jumped. All you need to do here is to

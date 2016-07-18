@@ -1,0 +1,46 @@
+@font-face {
+    font-family: predictionFont;
+    src: url(YOUR_CUSTOM_FONT.ttf);
+}
+
+body {
+    background: #666;
+	font-family: "Arial", sans-serif;
+	overflow: hidden;
+}
+
+#response{
+	position: absolute;
+	top: 10px;	
+	left: 10px;
+	color: white;
+}
+
+#predictions{
+	position: absolute;
+	width: 800px;
+	height: 480px;
+	left: 0px;
+	top: 0px;	
+	text-align: center;
+	background: #CCC;
+
+}
+
+#centering{
+	position: relative;
+	margin-top: 70px;
+}
+
+.first{
+	margin-top: 30px;
+	font-family: predictionFont;
+	font-size: 300px;
+	color: #000;
+}
+
+.second{
+	font-family: predictionFont;
+	font-size: 300px;
+	color: #999;
+}

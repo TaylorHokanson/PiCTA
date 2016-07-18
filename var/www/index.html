@@ -1,0 +1,121 @@
+<!-- Sources:
+		http://stackoverflow.com/questions/29297990/how-can-i-use-jquery%C2%B4s-ajax-function-to-run-php-script
+		http://stackoverflow.com/questions/33026882/how-to-keep-php-from-strippng-xml-tags-when-echoing-a-string
+		http://php.net/manual/en/function.htmlentities.php
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script type="text/javascript">
+            
+            var resp;
+            var predictions;
+            var data;
+            
+            jQuery(document).ready(function($){
+                
+                resp = $("#response");
+                predictions = $("#centering");
+                doAJAX();
+                setInterval(doAJAX, 5000);
+
+            });
+            
+			function doAJAX(){
+						
+			    $.ajax({
+                    type: "POST", // Method type GET/POST           
+                    url: "getxml.php", //Ajax Action url
+                    data: {},
+
+                    // Before call ajax you can do activity like please wait message
+                    beforeSend: function(xhr){
+                        resp.html("Please wait...");
+                    },
+
+                    //Will call if method not exists or any error inside php file
+                    error: function(qXHR, textStatus, errorThrow){
+                        resp.html("There is an error");
+                    },
+
+                    success: function(data, textStatus, jqXHR){						
+						xmlDoc = $.parseXML( data ),
+						$data = $( xmlDoc ),
+						parseAll();
+                    }
+                });		
+			}
+
+            function parseAll(){
+            
+            	var tmstmp;
+            	var currentMin;
+            	var currentHr;  
+          
+				var count = $data.find("prdtm").length;
+								
+				// no bus predicted
+				if(count < 1){
+					resp.text("no arrivals predicted...");
+				}
+				
+				// bus one is predicted
+				if(count > 0){
+
+					var busArrival;
+					
+					$tmstmp = $data.find( "tmstmp" ).eq(0);
+					tmstmp = $tmstmp.prop('innerHTML');				
+					$prdtm = $data.find( "prdtm" ).eq(0);
+					var prdtm = $prdtm.prop('innerHTML');
+
+					currentHr = parseInt(jQuery.trim(tmstmp).substring(9, 11));
+					currentMin = parseInt(jQuery.trim(tmstmp).substring(12, 14));
+					var predictedHr = parseInt(jQuery.trim(prdtm).substring(9, 11));
+					var predictedMin = parseInt(jQuery.trim(prdtm).substring(12, 14));
+				
+					if(currentHr == predictedHr){
+						busArrival = predictedMin - currentMin;
+					}
+					else{
+						busArrival = 60 - currentMin + predictedMin;
+					}
+					
+					resp.text("First bus in " + busArrival + " min(s)");	
+					predictions.html("<span class='first'>" + busArrival + "</span>");	
+						
+					// bus two is predicted
+					if(count > 1){
+			
+						var busArrival2;
+
+						$prdtm = $data.find( "prdtm" ).eq(1);
+						var prdtm = $prdtm.prop('innerHTML');
+						var predictedHr2 = parseInt(jQuery.trim(prdtm).substring(9, 11));
+						var predictedMin2 = parseInt(jQuery.trim(prdtm).substring(12, 14));
+			
+						if(currentHr == predictedHr2){
+							busArrival2 = predictedMin2 - currentMin;
+						}
+						else{
+							busArrival2 = 60 - currentMin + predictedMin2;
+						}
+						resp.append("<br />Second bus in " + busArrival2 + " min(s)");	
+						predictions.append("<span class='second'>" + busArrival2 + "</span>");	
+					}
+				}
+            }
+            
+        </script>
+    </head>
+    <body>
+        <div id="predictions">
+        	<div id="centering"></div>
+        </div>
+        <div id="response"></div>
+    </body>
+</html>

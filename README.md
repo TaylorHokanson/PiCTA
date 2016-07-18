@@ -48,3 +48,7 @@ Part | Cost
 17. Edit style.css to add a custom font
 16. Follow [these instructions for Firefox](https://github.com/elalemanyo/raspberry-pi-kiosk-screen) to setup kiosk mode
 17. ```sudo reboot now```
+
+###Next Steps
+1. Sometimes the page tries to load before the server fires up. Hasn't happened lately, so I can't pin down the problem.
+2. Would be fun to add more features, like maybe animated weather backgrounds and automatic startup based on day of week and time of day.

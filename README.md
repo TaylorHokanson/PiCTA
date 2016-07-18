@@ -1,6 +1,8 @@
+![PiCTA](PiCTA.jpg)
+
 ###PiCTA
 
-This project uses the Chicago Transit Authority API to track the bus outside my house. I made it because I'm always checking and rechecking this information on my phone. PiCTA only displays the predicitions I care about and updates them automatically without any interaction on my part. 
+This project uses the Chicago Transit Authority API to track the next two bus arrivals outside my house. I made it because I'm always checking and rechecking this information on my phone. PiCTA only displays the predicitions I care about and updates them automatically without any interaction on my part. 
 
 Most of these components were sponsored by [Newark / Element14](http://www.newark.com/) - thanks guys!
 

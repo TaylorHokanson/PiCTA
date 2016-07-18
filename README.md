@@ -1,155 +1,42 @@
-# PiCTA
-Raspberry Pi/Web Browser Chicago Bus Tracker
+###PiCTA
 
-### About
+This project uses the Chicago Transit Authority API to track the bus outside my house. I made it because I'm always checking and rechecking this information on my phone. PiCTA only displays the predicitions I care about and updates them automatically without any interaction on my part. 
 
-Project by Taylor Hokanson  
-www.taylorhokanson.com  
-taylor [at] taylorhokanson [dawt] com 
+Most of these components were sponsored by [Newark / Element14](http://www.newark.com/) - thanks guys!
 
-This code tracks the next two arrival times for the CTA
-bus/stop/direction combo of your choice. I know we've got smartphone aps
-for this, but I got to thinking
-about how many clicks it takes each time to check the bus on my phone. I really
-only ever care about the one stop outside my house, and I want to be
-able to glance at the predictions many times while getting ready in the
-morning.
+###BOM
 
-Note: You must apply for you own 
-[API key](http://www.transitchicago.com/developers/traintrackerapply.aspx) 
-in order for this code to work. Each key only allows a certain amount of
-queries per day, so keep this in mind if you leave the page running
-24/7. Even if you do hit the cap it should reset at midnight, and you
-can always code in downtime or decrease query frequency.
+Part | Cost
+| :--- | ---: |
+| [RPi 7" touchscreen](http://www.newark.com/raspberry-pi/raspberrypi-display/display-7-touch-screen-rpi-sbc/dp/49Y1712?MER=bn_level5_3NP_EngagementRec_1) | $75 |
+| [RPi 7" touchscreen enclosure](https://www.adafruit.com/products/2033) | $15 |
+| [Raspberry Pi board](http://www.newark.com/raspberry-pi/rpi2-modb-8gb-noobs/sbc-raspberry-pi-2-model-b-8gb/dp/38Y6469?selectedCategoryId=&exaMfpn=true&categoryId=&searchRef=SearchLookAhead&iscrfnonsku=false) (tested on B2 v1.1) | $40 |
+| [USB wifi dongle](http://www.newark.com/adafruit-industries/814/miniature-wifi-module-raspberry/dp/53W6285?ost=53W6285&selectedCategoryId=&categoryNameResp=All%2BCategories&iscrfnonsku=false) | $12 |
+| [Mini USB power supply](https://www.adafruit.com/product/1995) | $8 |
+| Total | $150 |
 
-You can use this code with or without a Raspberry Pi. If you just want
-the browser functionality, copy the bustracker folder to your computer and
-create a bookmarklet to index.html. Done! If you want to make a standalone
-device, read on. For those totally new to Raspberry Pi, please follow the
-excellent instructions at
-[Adafruit](https://learn.adafruit.com/category/raspberry-pi) to get your
-pi configured for SSH and connected to the internet. Make sure to set
-the timezone correctly - this will be important later.
+###Instructions
 
-### Bill of Materials
-
-1. Raspberry Pi (not sure which version I used, but it has 26 GPIO pins)
-2. Keyboard/mouse (used only during initial setup)
-3. Computer monitor (mine has a resolution of 1440 x 900)
-4. USB wifi dongle (though Ethernet works too)
-5. Tactile switches, wire, female headers, solder
-6. Video cable (depending on your setup)
-7. RPi power source
-8. 4GB SD card
-
-### Set up Kiosk Mode
-
-First we'll teach the Pi to boot automatically and head straight for a
-fullscreen Chromium window (see 
-[this link](http://blogs.wcode.org/2013/09/howto-boot-your-raspberry-pi-into-a-fullscreen-browser-kiosk/#comments-toggle)
-for more info). The following commands assume your are logged in to
-your pi via SSH. Note that RPi will not warn you if this process will
-not fit in your remaining SD card space. You can check with `df -m` to
-see how much disk space remains, and delete old update files with `sudo
-apt-get clean`.
-
-```
-sudo apt-get update
-sudo apt-get upgrade
-sudo apt-get install matchbox chromium x11-xserver-utils ttf-mscorefonts-installer xwit sqlite3 libnss3
-sudo reboot
-```
-
-I didn't have any problems with my monitor auto-detecting, but
-apparently this can be an issue. If you have problems, check out step 2
-on the link at the top of this section.
-
-Now we'll edit some files to execute automatically on startup. First,
-`sudo nano /etc/rc.local` and add the following code above `# Print the IP
-address`:
-
-```
-if [ -f /boot/xinitrc ]; then
-	ln -fs /boot/xinitrc /home/pi/.xinitrc;
-	su - pi -c 'startx' &
-fi
-```
-
-Now `sudo nano /boot/xinitrc` (which creates a new file) and add the following code:
-
-```
-#!/bin/sh
-while true; do
-
-	# Clean up previously running apps, gracefully at first then harshly
-	killall -TERM chromium 2>/dev/null;
-	killall -TERM matchbox-window-manager 2>/dev/null;
-	sleep 2;
-	killall -9 chromium 2>/dev/null;
-	killall -9 matchbox-window-manager 2>/dev/null;
-
-	# Clean out existing profile information
-	rm -rf /home/pi/.cache;
-	rm -rf /home/pi/.config;
-	rm -rf /home/pi/.pki;
-
-	# Generate the bare minimum to keep Chromium happy!
-	mkdir -p /home/pi/.config/chromium/Default
-	sqlite3 /home/pi/.config/chromium/Default/Web\ Data "CREATE TABLE meta(key LONGVARCHAR NOT NULL UNIQUE PRIMARY KEY, value LONGVARCHAR); INSERT INTO meta VALUES('version','46'); CREATE TABLE keywords (foo INTEGER);";
-
-	# Disable DPMS / Screen blanking
-	xset -dpms
-	xset s off
-
-	# Reset the framebuffer's colour-depth
-	fbset -depth $( cat /sys/module/*fb*/parameters/fbdepth );
-
-	# Hide the cursor (move it to the bottom-right, comment out if you want mouse interaction)
-	xwit -root -warp $( cat /sys/module/*fb*/parameters/fbwidth ) $( cat /sys/module/*fb*/parameters/fbheight )
-
-	# Start the window manager (remove "-use_cursor no" if you actually want mouse interaction)
-	matchbox-window-manager -use_titlebar no -use_cursor no &
-
-	# Start the browser (See http://peter.sh/experiments/chromium-command-line-switches/)
-	chromium  --app=http://URL.of.your/choice.html
-
-done;
-```
-
-Before you save the file, note that last line before `done;`. This is
-where you'll direct the Pi to open up a local file that contains the
-PiCTA webpage/code. My path is as follows:
-
-```
-chromium  --app=file:///home/pi/Desktop/scripts/bustracker/index.html
-```
-
-Even if you haven't got anything there yet you should still be able to
-boot the Pi and have it  bring up Chromium in full screen with a "page
-not found" error.
-
-### Local Webpage
-
-The bustracker folder contains an HTML doc, a CSS page for controlling
-visual style, and a local copy of JQuery. You'll probably want to check
-for updated JQ versions rather than just rolling with the one I
-included, but that's up to you. I recommend you place all three items in
-a folder called scripts on your RPi desktop.
-
-### Hardware Buttons (Optional)
-
-One funny feature of the RPi is that it has no physical reset/shutdown buttons.
-Sure, you can implement a shutdown via SSH, but we want the convenience
-of single touch wake/sleep. There's a great tutorial at 
-[Makezine](http://makezine.com/projects/tutorial-raspberry-pi-gpio-pins-and-python/) 
-on this topic. It's well worth the read if you want to learn about both
-the GPIO pins and the advantage of callbacks over polling.
-
-The python script that listens for our buttons is already sitting in the
-bustracker folder. All you need to do now is add the filepath
-`sudo python /home/pi/Desktop/scripts/shutdown.py &`
-to `sudo nano/etc/rc.local`. The reset button also functions as a wake
-button if you used the shutdown button to turn the pi off last time.
-
-Note: none of these buttons fully disconnect power from the pi. I assume
-it draws very little power in this state, but I haven't looked into it.
+2. Assemble [touchscreen/case](https://cdn-shop.adafruit.com/product-files/2718/2718build.jpg)
+3. Install [NOOBS/Jessie](http://computers.tutsplus.com/tutorials/how-to-install-noobs-on-a-raspberry-pi-with-a-mac--mac-57831) (Wheezy didn't work)
+2. ```    sudo nano /boot/config.txt```
+3. Add ```lcd_rotate=2``` at the end
+4. reboot
+5. ```sudo raspi-config```
+ * Set time (important for CTA tracking)
+ * Enable SSH
+ * Disable overscan
+6. reboot
+7. Connect to wifi (icon at top right)
+8. Determine Pi IP address
+9. SSH to Pi
+8. ```sudo apt-get update```
+8. ```sudo apt-get upgrade```
+9. ```sudo apt-get install apache2 -y```
+10. ```sudo apt-get install php5 libapache2-mod-php5 -y```
+11. ```cd /var/www```
+12. ```sudo chown pi: html```
+13. Replace default index.html page with the code from this repository
+13. ```sudo apt-get install iceweasel```
+15. Navigate RPi browser to RPi IP (do not open local file directly)
+16. Follow [these instructions for Firefox](https://github.com/elalemanyo/raspberry-pi-kiosk-screen) to setup kiosk mode

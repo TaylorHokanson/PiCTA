@@ -15,28 +15,34 @@ Part | Cost
 | [Mini USB power supply](https://www.adafruit.com/product/1995) | $8 |
 | Total | $150 |
 
-###Instructions
+###Basic Setup
 
-2. Assemble [touchscreen/case](https://cdn-shop.adafruit.com/product-files/2718/2718build.jpg)
-3. Install [NOOBS/Jessie](http://computers.tutsplus.com/tutorials/how-to-install-noobs-on-a-raspberry-pi-with-a-mac--mac-57831) (Wheezy didn't work)
-2. ```    sudo nano /boot/config.txt```
-3. Add ```lcd_rotate=2``` at the end
-4. reboot
-5. ```sudo raspi-config```
+1. Assemble [touchscreen/case](https://cdn-shop.adafruit.com/product-files/2718/2718build.jpg)
+2. Install [NOOBS/Jessie](http://computers.tutsplus.com/tutorials/how-to-install-noobs-on-a-raspberry-pi-with-a-mac--mac-57831) (Wheezy didn't work)
+3. ```    sudo nano /boot/config.txt```
+4. Add ```lcd_rotate=2``` at the end
+5. reboot
+6. ```sudo raspi-config```
  * Set time (important for CTA tracking)
  * Enable SSH
  * Disable overscan
-6. reboot
-7. Connect to wifi (icon at top right)
-8. Determine Pi IP address
-9. SSH to Pi
-8. ```sudo apt-get update```
-8. ```sudo apt-get upgrade```
-9. ```sudo apt-get install apache2 -y```
+7. reboot
+8. Connect to wifi (icon at top right)
+9. Determine Pi IP address
+10. SSH to Pi
+11. ```sudo apt-get update```
+12. ```sudo apt-get upgrade```
+
+###Server/Kiosk Setup
+
+1. ```sudo apt-get install iceweasel```
+2. ```sudo apt-get install apache2 -y```
 10. ```sudo apt-get install php5 libapache2-mod-php5 -y```
 11. ```cd /var/www```
 12. ```sudo chown pi: html```
-13. Replace default index.html page with the code from this repository
-13. ```sudo apt-get install iceweasel```
+13. Replace the contents of /var/www on your RPi with the files from this repository
 15. Navigate RPi browser to RPi IP (do not open local file directly)
+16. Edit getxml.php and add your API key, route, and stop ID (see php file for links)
+17. Edit style.css to add a custom font
 16. Follow [these instructions for Firefox](https://github.com/elalemanyo/raspberry-pi-kiosk-screen) to setup kiosk mode
+17. ```sudo reboot now```
